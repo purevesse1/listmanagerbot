@@ -1,5 +1,3 @@
-# Demo
-
 Telegram bot for group list managing.
 
 Operates using Node, JS, Telegram API and ngrok.
