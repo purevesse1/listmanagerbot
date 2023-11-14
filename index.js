@@ -16,6 +16,8 @@ const init = async () => {
     console.log(res.data)
 }
 
+
+// Echo received message
 app.post(URI, async (req, res) => {
    console.log(req.body)
 
