@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest test --watch",
+    "test": "jest test --watch --coverage test",
     "start": "tsc-watch --onSuccess 'node -r dotenv-flow/config dist'"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "async": "^3.2.5",
-    "grammy": "^1.19.2"
+    "grammy": "^1.19.2",
+    "mongoose": "^8.0.3"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",

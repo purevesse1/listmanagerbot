@@ -1,3 +1,5 @@
+import ListItem from '../models/ListItem'
+
 export interface IListItem {
   name: string
   qty: number
@@ -6,12 +8,12 @@ export interface IListItem {
 const ITEMS: IListItem[] = []
 
 export async function saveListItem(item: string, qty: number): Promise<void> {
-  ITEMS.push({
+  await ListItem.create({
     name: item,
     qty,
   })
 }
 
 export async function getListItems(): Promise<IListItem[]> {
-  return [...ITEMS]
+  return ListItem.find().exec()
 }
