@@ -15,7 +15,7 @@ export async function saveListItem(item: string, qty: number): Promise<void> {
 }
 
 export async function getListItems(): Promise<IListItem[]> {
-  return ListItem.find().exec()
+  return ListItem.find().lean()
 }
 
 export async function findItems(search: string): Promise<IListItem[]> {

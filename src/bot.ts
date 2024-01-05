@@ -4,6 +4,9 @@ import showList from './commands/showList'
 import checkItem from './commands/checkItem'
 
 const TOKEN = process.env.TOKEN
+if (!TOKEN) {
+  throw Error('TOKEN variable required')
+}
 const bot = new Bot(String(TOKEN))
 
 

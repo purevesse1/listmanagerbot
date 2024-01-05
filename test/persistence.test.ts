@@ -1,6 +1,8 @@
 import { describe, expect, test } from '@jest/globals'
 import { eachSeries } from 'async'
 import { getListItems, IListItem, saveListItem } from '../src/services/persistence'
+import { MongoMemoryServer } from 'mongodb-memory-server'
+import initMongo, { disconnectMongo } from '../src/mongo'
 
 describe('Persistence test', () => {
   test('saving items', async () => {
@@ -9,13 +11,21 @@ describe('Persistence test', () => {
       { name: 'Sugar', qty: 2 },
     ]
 
-    await eachSeries(source, async (item: IListItem) => {
+    const mongod = await MongoMemoryServer.create()
+    const uri = mongod.getUri()
+
+    await initMongo(uri)
+
+    await eachSeries(source, async (item: Omit<IListItem, '_id'>) => {
       await saveListItem(item.name, item.qty)
     })
 
     const saved = await getListItems()
 
     expect(saved.length).toBe(2)
-    expect(saved).toEqual(source)
+    expect(saved).toMatchObject(source)
+
+    await disconnectMongo()
+    await mongod.stop()
   })
 })
