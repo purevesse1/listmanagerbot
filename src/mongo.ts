@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-export default async function(url: string) {
+export async function connectMongo(url: string) {
   await mongoose.connect(url)
   console.log('Mongo connected')
 }

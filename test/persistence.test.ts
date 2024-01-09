@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals'
 import { eachSeries } from 'async'
 import { getListItems, IListItem, saveListItem } from '../src/services/persistence'
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import initMongo, { disconnectMongo } from '../src/mongo'
+import { disconnectMongo, connectMongo } from '../src/mongo'
 
 describe('Persistence test', () => {
   test('saving items', async () => {
@@ -14,7 +14,7 @@ describe('Persistence test', () => {
     const mongod = await MongoMemoryServer.create()
     const uri = mongod.getUri()
 
-    await initMongo(uri)
+    await connectMongo(uri)
 
     await eachSeries(source, async (item: Omit<IListItem, '_id'>) => {
       await saveListItem(item.name, item.qty)
