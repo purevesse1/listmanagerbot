@@ -11,7 +11,7 @@ interface IPerson extends IAgedEntity {
   gender?: Gender
 }
 
-describe('Context tests', () => {
+describe('Classes tests', () => {
   test('sample 1', function() {
     const obj = {
       name: 'xd',
@@ -79,6 +79,14 @@ describe('Context tests', () => {
     } catch (e: any) {
       expect((e as Error).message).toBe('Gender change is prohibited to minors')
     }
+  })
+  test('promise test', () => {
+    type fn = (param: any) => void
+    const executor = (resolve: fn, reject: fn) => {
+      reject('test')
+    }
+    const promise = new Promise(executor)
+    expect(promise).rejects.toEqual('test')
   })
 })
 
