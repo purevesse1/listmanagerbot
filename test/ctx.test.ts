@@ -6,6 +6,7 @@ import { connectMongo, disconnectMongo } from '../src/mongo'
 import showList from '../src/commands/showList'
 import ListItem from '../src/models/ListItem'
 import { saveListItem } from '../src/services/persistence'
+import checkItem from '../src/commands/checkItem'
 
 class ContextMock {
   replies: string[] = []
@@ -13,6 +14,14 @@ class ContextMock {
 
   async reply(text: string) {
     this.replies.push(text)
+  }
+
+  static create() {
+    return new ContextMock() as unknown as CommandContext<any>
+  }
+
+  lastReply() {
+    return this.replies.at(-1)
   }
 }
 
@@ -31,29 +40,63 @@ describe('Context tests', () => {
   })
 
   test('Responds to addToList with no argument', async () => {
-    const ctx = new ContextMock() as unknown as CommandContext<any>
+    const ctx = ContextMock.create()
     await addToList(ctx)
-    expect(ctx.replies[0]).toBe('Please specify what item you would like to add')
+    expect(ctx.lastReply()).toBe('Please specify what item you would like to add')
   })
 
   test('Responds to showList on empty list', async () => {
-    const ctx = new ContextMock() as unknown as CommandContext<any>
+    const ctx = ContextMock.create()
     await showList(ctx)
-    expect(ctx.replies[0]).toBe('Your list is empty')
+    expect(ctx.lastReply()).toBe('Your list is empty')
   })
 
   test('Adds item to list on addToList with one item argument', async () => {
-    const ctx = new ContextMock() as unknown as CommandContext<any>
+    const ctx = ContextMock.create()
     ctx.match = 'Milk 1'
     await addToList(ctx)
-    expect(ctx.replies[0]).toBe('Added Milk of quantity 1')
+    expect(ctx.lastReply()).toBe('Added Milk of quantity 1')
   })
 
   test('Displays bulleted list with items on showList', async () => {
-    const ctx = new ContextMock() as unknown as CommandContext<any>
+    const ctx = ContextMock.create()
     await saveListItem('Cheese', 1)
     await showList(ctx)
-    expect(ctx.replies[0]).toBe('- 1 Cheese')
+    expect(ctx.lastReply()).toBe('- 1 Cheese')
+  })
+
+  test('Responds to checkItem with no argument', async () => {
+    const ctx = ContextMock.create()
+    await checkItem(ctx)
+    expect(ctx.lastReply()).toBe('Specify item name')
+  })
+
+  test('Responds to nothing found in list on checkItem with item input', async () => {
+    const ctx = ContextMock.create()
+
+    await saveListItem('Cheese', 1)
+
+    ctx.match = 'Milk'
+    await checkItem(ctx)
+
+    expect(ctx.lastReply()).toBe('No such items in your list')
+  })
+
+  test('Responds please choose if many matches AND checks item if match found', async () => {
+    const ctx = ContextMock.create()
+
+    await saveListItem('Cheese', 1)
+    await saveListItem('Cream cheese', 1)
+
+    ctx.match = 'Cheese'
+    await checkItem(ctx)
+
+    expect(ctx.lastReply()).toBe('- 1 Cheese\n- 1 Cream cheese')
+
+    ctx.match = 'Cream cheese'
+    await checkItem(ctx)
+
+    expect(ctx.lastReply()).toBe('1 of Cream cheese checked')
   })
 
   afterAll(async () => {
