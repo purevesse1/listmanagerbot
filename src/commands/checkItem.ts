@@ -1,7 +1,7 @@
-import { CommandContext } from 'grammy'
 import { completeItem, findItems } from '../services/persistence'
+import { I18nCommandContext } from '../i18n'
 
-export default async function(ctx: CommandContext<any>) {
+export default async function(ctx: I18nCommandContext) {
   const { match } = ctx
   if (!match) {
     await ctx.reply('Specify item name')

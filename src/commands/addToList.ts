@@ -1,12 +1,12 @@
-import { CommandContext } from 'grammy'
 import { IListItem, saveListItem } from '../services/persistence'
+import { I18nCommandContext } from '../i18n'
 
 const ITEM_RE = /(.+) (\d)+$/
 
-export default async function(ctx: CommandContext<any>) {
+export default async function(ctx: I18nCommandContext) {
   const parsed = parseAddToList(ctx.match)
   if (!parsed.name) {
-    await ctx.reply('Please specify what item you would like to add')
+    await ctx.reply(ctx.t('specify-item-add'))
     return
   }
   const msg = `Added ${parsed.name} of quantity ${parsed.qty}`

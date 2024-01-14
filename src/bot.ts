@@ -12,7 +12,7 @@ const bot = new Bot<I18nContext>(String(TOKEN))
 
 bot.use(i18n);
 
-bot.command('start', (ctx) => ctx.reply('Welcome! Up and running.'))
+bot.command('start', (ctx) => ctx.reply(ctx.t('welcome-message')))
 bot.command('atl', addToList)
 bot.command('sl', showList)
 bot.command('check', checkItem)

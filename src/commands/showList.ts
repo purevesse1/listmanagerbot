@@ -1,7 +1,7 @@
-import { CommandContext } from 'grammy'
 import { getListItems } from '../services/persistence'
+import { I18nCommandContext } from '../i18n'
 
-export default async function(ctx: CommandContext<any>) {
+export default async function(ctx: I18nCommandContext) {
   const items = await getListItems()
 
   if (!items.length) {
