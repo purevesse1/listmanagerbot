@@ -2,13 +2,15 @@ import { Bot } from 'grammy'
 import addToList from './commands/addToList'
 import showList from './commands/showList'
 import checkItem from './commands/checkItem'
+import { i18n, I18nContext } from './i18n'
 
 const TOKEN = process.env.TOKEN
 if (!TOKEN) {
   throw Error('TOKEN variable required')
 }
-const bot = new Bot(String(TOKEN))
+const bot = new Bot<I18nContext>(String(TOKEN))
 
+bot.use(i18n);
 
 bot.command('start', (ctx) => ctx.reply('Welcome! Up and running.'))
 bot.command('atl', addToList)
