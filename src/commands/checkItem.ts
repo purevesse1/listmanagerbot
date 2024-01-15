@@ -4,12 +4,12 @@ import { I18nCommandContext } from '../i18n'
 export default async function(ctx: I18nCommandContext) {
   const { match } = ctx
   if (!match) {
-    await ctx.reply('Specify item name')
+    await ctx.reply(ctx.t('check-no-item'))
     return
   }
   const matching = await findItems(match)
   if (!matching.length) {
-    await ctx.reply('No such items in your list')
+    await ctx.reply(ctx.t('item-not-found'))
     return
   }
   if (matching.length > 1) {

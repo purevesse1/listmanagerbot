@@ -5,7 +5,7 @@ export default async function(ctx: I18nCommandContext) {
   const items = await getListItems()
 
   if (!items.length) {
-    await ctx.reply('Your list is empty')
+    await ctx.reply(ctx.t('list-empty'))
     return
   }
   const replyItems: string = items.map(item => {

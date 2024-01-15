@@ -1,12 +1,12 @@
 import { describe, expect, test, beforeAll, beforeEach, afterAll } from '@jest/globals'
 import addToList from '../src/commands/addToList'
-import { CommandContext } from 'grammy'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { connectMongo, disconnectMongo } from '../src/mongo'
 import showList from '../src/commands/showList'
 import ListItem from '../src/models/ListItem'
 import { saveListItem } from '../src/services/persistence'
 import checkItem from '../src/commands/checkItem'
+import { I18nCommandContext } from '../src/i18n'
 
 class ContextMock {
   replies: string[] = []
@@ -17,11 +17,15 @@ class ContextMock {
   }
 
   static create() {
-    return new ContextMock() as unknown as CommandContext<any>
+    return new ContextMock() as unknown as (I18nCommandContext & ContextMock)
   }
 
   lastReply() {
     return this.replies.at(-1)
+  }
+
+  t(key: string) {
+    return key
   }
 }
 
@@ -42,13 +46,13 @@ describe('Context tests', () => {
   test('Responds to addToList with no argument', async () => {
     const ctx = ContextMock.create()
     await addToList(ctx)
-    expect(ctx.lastReply()).toBe('Please specify what item you would like to add')
+    expect(ctx.lastReply()).toBe(ctx.t('specify-item-add'))
   })
 
   test('Responds to showList on empty list', async () => {
     const ctx = ContextMock.create()
     await showList(ctx)
-    expect(ctx.lastReply()).toBe('Your list is empty')
+    expect(ctx.lastReply()).toBe(ctx.t('list-empty'))
   })
 
   test('Adds item to list on addToList with one item argument', async () => {
@@ -68,7 +72,7 @@ describe('Context tests', () => {
   test('Responds to checkItem with no argument', async () => {
     const ctx = ContextMock.create()
     await checkItem(ctx)
-    expect(ctx.lastReply()).toBe('Specify item name')
+    expect(ctx.lastReply()).toBe(ctx.t('check-no-item'))
   })
 
   test('Responds to nothing found in list on checkItem with item input', async () => {
@@ -79,7 +83,7 @@ describe('Context tests', () => {
     ctx.match = 'Milk'
     await checkItem(ctx)
 
-    expect(ctx.lastReply()).toBe('No such items in your list')
+    expect(ctx.lastReply()).toBe(ctx.t('item-not-found'))
   })
 
   test('Responds please choose if many matches AND checks item if match found', async () => {
