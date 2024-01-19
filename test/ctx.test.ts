@@ -24,8 +24,12 @@ class ContextMock {
     return this.replies.at(-1)
   }
 
-  t(key: string) {
-    return key
+  t(key: string, params: Record<string, string | number> = {}) {
+    const stringifyParams = Object.keys(params)
+      .map(field => params[field])
+    return [key, stringifyParams.join('|')]
+      .filter(x => x)
+      .join('|')
   }
 }
 
@@ -46,33 +50,33 @@ describe('Context tests', () => {
   test('Responds to addToList with no argument', async () => {
     const ctx = ContextMock.create()
     await addToList(ctx)
-    expect(ctx.lastReply()).toBe(ctx.t('specify-item-add'))
+    expect(ctx.lastReply()).toBe('specify-item-add')
   })
 
   test('Responds to showList on empty list', async () => {
     const ctx = ContextMock.create()
     await showList(ctx)
-    expect(ctx.lastReply()).toBe(ctx.t('list-empty'))
+    expect(ctx.lastReply()).toBe('list-empty')
   })
 
   test('Adds item to list on addToList with one item argument', async () => {
     const ctx = ContextMock.create()
     ctx.match = 'Milk 1'
     await addToList(ctx)
-    expect(ctx.lastReply()).toBe('Added Milk of quantity 1')
+    expect(ctx.lastReply()).toBe('added-item|Milk|1')
   })
 
   test('Displays bulleted list with items on showList', async () => {
     const ctx = ContextMock.create()
     await saveListItem('Cheese', 1)
     await showList(ctx)
-    expect(ctx.lastReply()).toBe('- 1 Cheese')
+    expect(ctx.lastReply()).toBe('show-list|Cheese|1')
   })
 
   test('Responds to checkItem with no argument', async () => {
     const ctx = ContextMock.create()
     await checkItem(ctx)
-    expect(ctx.lastReply()).toBe(ctx.t('check-no-item'))
+    expect(ctx.lastReply()).toBe('check-no-item')
   })
 
   test('Responds to nothing found in list on checkItem with item input', async () => {
@@ -83,10 +87,10 @@ describe('Context tests', () => {
     ctx.match = 'Milk'
     await checkItem(ctx)
 
-    expect(ctx.lastReply()).toBe(ctx.t('item-not-found'))
+    expect(ctx.lastReply()).toBe('item-not-found')
   })
 
-  test('Responds please choose if many matches AND checks item if match found', async () => {
+  test('Asks to choose if many matches OR checks item if only one match found', async () => {
     const ctx = ContextMock.create()
 
     await saveListItem('Cheese', 1)
@@ -95,12 +99,12 @@ describe('Context tests', () => {
     ctx.match = 'Cheese'
     await checkItem(ctx)
 
-    expect(ctx.lastReply()).toBe('- 1 Cheese\n- 1 Cream cheese')
+    expect(ctx.lastReply()).toBe('show-matching-items|Cheese|1\nshow-matching-items|Cream cheese|1')
 
     ctx.match = 'Cream cheese'
     await checkItem(ctx)
 
-    expect(ctx.lastReply()).toBe('1 of Cream cheese checked')
+    expect(ctx.lastReply()).toBe('check-item|Cream cheese|1')
   })
 
   afterAll(async () => {
