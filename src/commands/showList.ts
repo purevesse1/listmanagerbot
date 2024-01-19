@@ -9,7 +9,7 @@ export default async function(ctx: I18nCommandContext) {
     return
   }
   const replyItems: string = items.map(item => {
-    return `- ${item.qty} ${item.name}`
+    return ctx.t('show-list', { name: item.name, qty: item.qty })
   }).join('\n')
 
   await ctx.reply(replyItems)
