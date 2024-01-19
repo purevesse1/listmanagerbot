@@ -14,7 +14,7 @@ export default async function(ctx: I18nCommandContext) {
   }
   if (matching.length > 1) {
     const replyItems: string = matching.map(item => {
-      return `- ${item.qty} ${item.name}`
+      return ctx.t('show-matching-items', { name: item.name, qty: item.qty })
     }).join('\n')
 
     await ctx.reply(replyItems)
@@ -22,5 +22,5 @@ export default async function(ctx: I18nCommandContext) {
   }
   const [item] = matching
   await completeItem(item)
-  await ctx.reply(`${item.qty} of ${item.name} checked`)
+  await ctx.reply(ctx.t('check-item', { name: item.name, qty: item.qty }))
 }
