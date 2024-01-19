@@ -9,7 +9,7 @@ export default async function(ctx: I18nCommandContext) {
     await ctx.reply(ctx.t('specify-item-add'))
     return
   }
-  const msg = `Added ${parsed.name} of quantity ${parsed.qty}`
+  const msg = ctx.t('added-item', { name: parsed.name, qty: parsed.qty })
   await saveListItem(parsed.name, parsed.qty)
   await ctx.reply(msg)
 }
