@@ -3,3 +3,7 @@ specify-item-add = Please specify what item you would like to add
 check-no-item = Specify item name
 item-not-found = No such items in your list
 list-empty = Your list is empty
+added-item = Added { $name } of quantity { $qty }
+show-list = - { $qty } { $name }
+check-item = { $qty } of { $name } checked
+show-matching-items = - { $qty } { $name }
