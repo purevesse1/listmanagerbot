@@ -1,5 +1,6 @@
 import ListItem from '../models/ListItem'
 import mongoose from 'mongoose'
+import * as utils from './utils'
 
 export interface IListItem {
   name: string
@@ -19,8 +20,12 @@ export async function getListItems(): Promise<IListItem[]> {
 }
 
 export async function findItems(search: string): Promise<IListItem[]> {
+  if (utils.isQuoted(search)) {
+    const exactMatchRegexp = new RegExp(`^${utils.stripQuotes(search)}$`, 'i')
+    return ListItem.find({ name: { $regex: exactMatchRegexp } }).lean()
+  }
   const $regex = new RegExp(search, 'i')
-  return ListItem.find({ name: { $regex } })
+  return ListItem.find({ name: { $regex } }).lean()
 }
 
 export async function completeItem(item: IListItem): Promise<void> {
