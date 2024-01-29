@@ -8,8 +8,8 @@ export interface IListItem {
   _id: mongoose.Types.ObjectId
 }
 
-export async function saveListItem(item: string, qty: number): Promise<void> {
-  await ListItem.create({
+export async function saveListItem(item: string, qty: number): Promise<IListItem> {
+  return ListItem.create({
     name: item,
     qty,
   })
@@ -28,6 +28,6 @@ export async function findItems(search: string): Promise<IListItem[]> {
   return ListItem.find({ name: { $regex } }).lean()
 }
 
-export async function completeItem(item: IListItem): Promise<void> {
+export async function completeItem(item: Pick<IListItem, '_id'>): Promise<void> {
   await ListItem.deleteOne({ _id: item._id })
 }

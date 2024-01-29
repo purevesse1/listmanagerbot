@@ -7,3 +7,7 @@ added-item = Added { $name } of quantity { $qty }
 show-list = - { $qty } { $name }
 check-item = { $qty } of { $name } checked
 show-matching-items = - { $qty } { $name }
+random-message = Got another message!
+check = Check
+error = Error
+  .unexpected = Unexpected error

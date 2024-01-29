@@ -1,5 +1,6 @@
 import { IListItem, saveListItem } from '../services/persistence'
 import { I18nCommandContext } from '../i18n'
+import { InlineKeyboard } from 'grammy'
 
 const ITEM_RE = /(.+) (\d)+$/
 
@@ -10,8 +11,9 @@ export default async function(ctx: I18nCommandContext) {
     return
   }
   const msg = ctx.t('added-item', { name: parsed.name, qty: parsed.qty })
-  await saveListItem(parsed.name, parsed.qty)
-  await ctx.reply(msg)
+  const saved = await saveListItem(parsed.name, parsed.qty)
+  const inlineKeyboard = new InlineKeyboard().text(ctx.t('check'), saved._id.toString())
+  await ctx.reply(msg, { reply_markup: inlineKeyboard })
 }
 
 type ParsedItem = Partial<IListItem> & { qty: number }
