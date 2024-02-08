@@ -1,6 +1,7 @@
 import ListItem from '../models/ListItem'
 import mongoose from 'mongoose'
 import * as utils from './utils'
+import { DeleteResult } from 'mongodb'
 
 export interface IListItem {
   name: string
@@ -28,6 +29,6 @@ export async function findItems(search: string): Promise<IListItem[]> {
   return ListItem.find({ name: { $regex } }).lean()
 }
 
-export async function completeItem(item: Pick<IListItem, '_id'>): Promise<void> {
-  await ListItem.deleteOne({ _id: item._id })
+export async function completeItem(item: Pick<IListItem, '_id'>): Promise<DeleteResult> {
+  return ListItem.deleteOne({ _id: item._id })
 }
