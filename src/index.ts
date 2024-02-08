@@ -1,4 +1,4 @@
-import './bot'
+import { bot, botStart } from './bot'
 import { connectMongo } from './mongo'
 import initCommands from './commands/init'
 
@@ -7,7 +7,10 @@ if (!MONGO_URL) {
   throw Error('MONGO_URL variable required')
 }
 connectMongo(MONGO_URL)
-  .then(async () => { await initCommands() })
+  .then(async () => {
+    await initCommands(bot)
+    botStart()
+  })
   .catch(e => {
     console.error(e)
   })
