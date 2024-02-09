@@ -20,7 +20,7 @@ export default async function(bot: Bot<Context & I18nFlavor>) {
       if (id && messageId) {
         await ctx.api.deleteMessage(id, messageId)
       }
-      const reply = result.deletedCount ? 'Checked!' : 'Item already checked'
+      const reply = result.deletedCount ? ctx.t('checked-pop-up') : ctx.t('no-item-pop-up')
       await ctx.answerCallbackQuery(reply)
     } catch (e: any) {
       await ctx.reply(ctx.t('error.unexpected'))

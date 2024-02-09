@@ -9,5 +9,7 @@ check-item = { $qty } of { $name } checked
 show-matching-items = - { $qty } { $name }
 random-message = Got another message!
 check = Check
+checked-pop-up = Checked!
+no-item-pop-up = Item already checked
 error = Error
   .unexpected = Unexpected error
