@@ -7,10 +7,13 @@ import ListItem from '../src/models/ListItem'
 import { saveListItem } from '../src/services/persistence'
 import checkItem from '../src/commands/checkItem'
 import { I18nCommandContext } from '../src/i18n'
+import { retrieveChatId } from '../src/services/utils'
 
 class ContextMock {
   replies: string[] = []
   match?: string = ''
+
+  chat: { id: number } = { id: 1 }
 
   async reply(text: string) {
     this.replies.push(text)
@@ -68,7 +71,7 @@ describe('Context tests', () => {
 
   test('Displays bulleted list with items on showList', async () => {
     const ctx = ContextMock.create()
-    await saveListItem('Cheese', 1)
+    await saveListItem('Cheese', 1, retrieveChatId(ctx))
     await showList(ctx)
     expect(ctx.lastReply()).toBe('show-list|Cheese|1')
   })
@@ -82,7 +85,7 @@ describe('Context tests', () => {
   test('Responds to nothing found in list on checkItem with item input', async () => {
     const ctx = ContextMock.create()
 
-    await saveListItem('Cheese', 1)
+    await saveListItem('Cheese', 1, retrieveChatId(ctx))
 
     ctx.match = 'Milk'
     await checkItem(ctx)
@@ -93,8 +96,8 @@ describe('Context tests', () => {
   test('Asks to choose if many matches OR checks item if only one match found', async () => {
     const ctx = ContextMock.create()
 
-    await saveListItem('Cheese', 1)
-    await saveListItem('Cream cheese', 1)
+    await saveListItem('Cheese', 1, retrieveChatId(ctx))
+    await saveListItem('Cream cheese', 1, retrieveChatId(ctx))
 
     ctx.match = 'Cheese'
     await checkItem(ctx)

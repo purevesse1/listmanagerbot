@@ -5,6 +5,7 @@ const collection = 'ListItem'
 const schema = new Schema<IListItem>({
   name: String,
   qty: Number,
+  chatId: Number,
 }, { collection })
 
 export default model(collection, schema)

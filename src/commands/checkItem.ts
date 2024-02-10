@@ -1,5 +1,6 @@
 import { completeItem, findItems } from '../services/persistence'
 import { I18nCommandContext } from '../i18n'
+import { retrieveChatId } from '../services/utils'
 
 export default async function(ctx: I18nCommandContext) {
   const { match } = ctx
@@ -7,7 +8,7 @@ export default async function(ctx: I18nCommandContext) {
     await ctx.reply(ctx.t('check-no-item'))
     return
   }
-  const matching = await findItems(match)
+  const matching = await findItems(match, retrieveChatId(ctx))
   if (!matching.length) {
     await ctx.reply(ctx.t('item-not-found'))
     return
